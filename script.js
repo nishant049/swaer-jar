@@ -539,6 +539,15 @@
 
       if (!currentUser) {
         await loginUser("anonymous");
+
+        await new Promise((resolve) => {
+          const unsubscribe = auth.onAuthStateChanged((user) => {
+              if (user) {
+             unsubscribe();
+            resolve();
+            }
+          });
+        });
       }
 
       if (!currentUser) {

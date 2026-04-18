@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff6fa5" />
+  <title>Swear Jar 💕</title>
+
+  <!-- Firebase CDN. Fill FIREBASE_CONFIG in the script block near the bottom. -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero" aria-labelledby="appTitle">
+      <div class="hero-copy">
+        <span class="kicker">💕 tiny storms, sweeter repairs</span>
+        <h1 id="appTitle">Swear Jar 💕</h1>
+        <p class="subtitle">A shared little jar for dramatic apologies, suspicious side-eyes, and making up before bedtime.</p>
+        <div class="hero-actions">
+          <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true">🔊 Sound ON</button>
+          <button class="reset-button" id="resetButton" type="button">We made up ❤️</button>
+        </div>
+      </div>
+
+      <div class="hero-note" aria-hidden="true">
+        <span>😅</span>
+        <span>🪙</span>
+        <span>😜</span>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <aside>
+        <section class="panel auth-panel is-collapsed" aria-labelledby="authTitle">
+          <button class="auth-toggle" id="authToggle" type="button" aria-expanded="false" aria-controls="authPanelBody">
+            <span class="auth-toggle-icon" aria-hidden="true">🔐</span>
+            <span>
+              <strong id="authTitle">Connect</strong>
+              <small id="authToggleSummary">Local mode</small>
+            </span>
+            <span class="auth-toggle-caret" aria-hidden="true">⌄</span>
+          </button>
+
+          <div class="auth-panel-body" id="authPanelBody">
+            <h2 class="section-title auth-section-title">Auth <span id="modeBadge">Local</span></h2>
+            <div class="mode-switch" role="tablist" aria-label="Jar mode">
+              <button class="mode-button active" id="localModeButton" type="button" role="tab" aria-selected="true">Local</button>
+              <button class="mode-button" id="sharedModeButton" type="button" role="tab" aria-selected="false">Shared</button>
+            </div>
+
+            <div class="shared-controls" id="sharedControls" hidden>
+              <div class="status-chip" id="authStatus">Shared mode</div>
+              <div class="auth-actions">
+                <button class="secondary-button" id="googleButton" type="button">Google Sign-In</button>
+                <button class="secondary-button" id="guestButton" type="button">Guest Login</button>
+              </div>
+              <div class="input-row">
+                <input class="text-input" id="coupleIdInput" type="text" inputmode="text" autocomplete="off" maxlength="40" placeholder="Couple ID" aria-label="Couple ID" />
+                <button class="primary-button" id="joinButton" type="button">Create / Join</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="moodTitle">
+          <h2 class="section-title" id="moodTitle">Mood</h2>
+          <div class="status-chip" id="syncStatus">Private jar on this device</div>
+        </section>
+      </aside>
+
+      <section>
+        <div class="stats-grid" aria-label="Jar summary">
+          <article class="stat-card">
+            <span class="stat-label">Total fights</span>
+            <strong class="stat-value" id="totalCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Peace streak</span>
+            <strong class="stat-value" id="streakCount">0 days 💖</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Who fights more</span>
+            <strong class="verdict-text" id="verdictText">Perfect balance ⚖️</strong>
+          </article>
+        </div>
+
+        <div class="counter-grid">
+          <article class="counter-card me">
+            <div class="counter-top">
+              <h2 class="person-name">Me</h2>
+              <span class="person-badge" aria-hidden="true">😅</span>
+            </div>
+            <strong class="counter-number" id="myCount">0</strong>
+            <div class="counter-bottom">
+              <button class="fight-button" id="meButton" type="button">I messed up 😅</button>
+            </div>
+          </article>
+
+          <div class="jar-scene center-jar" aria-hidden="true">
+            <span class="floating-heart heart-one">💕</span>
+            <span class="floating-heart heart-two">💖</span>
+            <span class="floating-heart heart-three">💗</span>
+            <div class="jar-visual">
+              <div class="jar-lid"></div>
+              <div class="jar-glass" id="jarTarget">
+                <div class="jar-label">Swear Jar</div>
+                <div class="coin-pile">
+                  <span class="coin"></span>
+                  <span class="coin"></span>
+                  <span class="coin"></span>
+                  <span class="coin"></span>
+                  <span class="coin"></span>
+                  <span class="coin"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <article class="counter-card her">
+            <div class="counter-top">
+              <h2 class="person-name">My Girlfriend</h2>
+              <span class="person-badge" aria-hidden="true">😜</span>
+            </div>
+            <strong class="counter-number" id="herCount">0</strong>
+            <div class="counter-bottom">
+              <button class="fight-button" id="herButton" type="button">She messed up 😜</button>
+            </div>
+          </article>
+        </div>
+
+        <section class="history-panel" aria-labelledby="historyTitle">
+          <h2 class="section-title" id="historyTitle">History <span id="historyCount">0</span></h2>
+          <div class="history-list" id="historyList" aria-live="polite"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+
+  <audio id="coinAudio" preload="auto"></audio>
+  <audio id="herAudio" preload="auto"></audio>
+  <audio id="voiceAudio" preload="auto"></audio>
+  <audio id="celebrationAudio" preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

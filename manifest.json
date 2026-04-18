@@ -1,0 +1,20 @@
+{
+  "name": "Swear Jar 💕",
+  "short_name": "SwearJar",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffe4ec",
+  "theme_color": "#ff6fa5",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
